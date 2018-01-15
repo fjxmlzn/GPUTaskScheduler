@@ -1,0 +1,5 @@
+*.egg-info/
+temp/
+results/
+*.pyc
+*.log
