@@ -1,5 +1,9 @@
-import matplotlib
-matplotlib.use('Agg')
+try:
+    import matplotlib
+except ImportError:
+    pass
+else:
+    matplotlib.use('Agg')
 
 import sys, imp
 try:
