@@ -149,7 +149,6 @@ Now everything is ready, you can start running the tests by a few lines of code.
 ```
 from config import config
 from my_gpu_task import MyGPUTask
-
 ```
 We also need to import the scheduler class:
 ```
@@ -165,6 +164,13 @@ scheduler.start()
 ```
 
 Now the scheduler will schedule the test instances on the GPUs you set in parallel for you. Whenever a test instance finishes on one GPU, the scheduler will fetch the next test instances and run it on that GPU.
+
+> **WARNING:** If you import theano or tensorflow library in the top module of my_gpu_task.py (or config.py), the code may immediately occupy part of GPU resources before scheduler starts. Usually that would only waste part of GPU memory resources, but not GPU calculation resources. If you don't want this happen, there are many workarounds:
+> * Use [lazy_import](https://github.com/mnmelo/lazy_import) library to import theano or tensorflow, so that they will be loaded at the first real usage.
+> * Move import statements to MyGPUTask class body.
+> * Implement the test code in another file, and call it in MyGPUTask.main.
+
+> **TODO:** A better way to get around this.
 
 ### Other useful interfaces
 
