@@ -165,12 +165,16 @@ scheduler.start()
 
 Now the scheduler will schedule the test instances on the GPUs you set in parallel for you. Whenever a test instance finishes on one GPU, the scheduler will fetch the next test instances and run it on that GPU.
 
-> **WARNING:** If you import theano or tensorflow library in the top module of my_gpu_task.py (or config.py), the code may immediately occupy part of GPU resources before scheduler starts. Usually that would only waste part of GPU memory resources, but not GPU calculation resources. If you don't want this happen, there are many workarounds:
+> **WARNING:** If you import theano or tensorflow library in the top module of my_gpu_task.py (or config.py), the code may immediately occupy part of GPU resources before the scheduler starts. Usually that would only waste part of GPU memory resources, but not GPU calculation resources. If you don't want this happen, there are many workarounds:
 > * Use [lazy_import](https://github.com/mnmelo/lazy_import) library to import theano or tensorflow, so that they will be loaded at the first real usage.
 > * Move import statements to MyGPUTask class body.
 > * Implement the test code in another file, and call it in MyGPUTask.main.
 
 > **TODO:** A better way to get around this.
+
+> **WARNING:** When running the test code, the scheduler will automatically set matplotlib's backend to Agg (if matplotlib is installed), because in most cases we don't need to show figures on screen. If this is not what you need, in the begining of your test code's main function, you can use `matplotlib.pyplot.switch_backend` to switch backend, or `reload(matplotlib)` and then choose your desired backend.
+
+> **TODO:** A better way to do this.
 
 ### Other useful interfaces
 
