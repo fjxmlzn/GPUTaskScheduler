@@ -1,7 +1,7 @@
-from config_manager import ConfigManager
+from .config_manager import ConfigManager
 import multiprocess, time, os, copy, logging, shlex, subprocess, sys
 from multiprocess.managers import BaseManager
-import util, os
+import os
 import pathos
 try:
     import cPickle as pickle
