@@ -1,13 +1,7 @@
 config = {
     "scheduler_config": {
-        "backend": "theano",
-        "gpu": ["gpu0", "gpu1", "gpu2"],
-        "force_rerun": False,
-    },
-
-    "theano_config": {
-        "theanorc_template_file": "sample.theanorc"
-    },
+        "gpu": ["0", "1", "2"]
+    }
 
     "global_config": {
         "num_run": 5,

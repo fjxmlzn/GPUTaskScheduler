@@ -15,8 +15,5 @@ setup(
     keywords = "GPU task scheduler",
     license = "MIT License",
     url = "https://github.com/fjxmlzn/GPUTaskScheduler",
-    package_data = {
-        "gpu_task_scheduler": ["sample.theanorc"]
-    },
-    install_requires = ["matplotlib", "pathos", "multiprocess"]
+    install_requires = ["pathos", "multiprocess"]
 )

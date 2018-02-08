@@ -25,14 +25,10 @@ The configuration is defined in a nested Python dictionary structure, which cont
   
   The configuration for the scheduler, defined in a Python dictionary. It contains following keys.
 
-	* **backend [optional, default="theano"]**
-	  
-      This defines which backend the test code is going to use. The value could be "theano" or "tensorflow".
-
 	* **gpu [mandatory]**
 
-      This defines the list of GPUs that are available for the scheduler. The value is defined in a Python list, whose values could be something like "gpu0" (when using theano's old backend), "cuda0" (when using theano's gpuarray backend), or "0" (when using tensorflow).
-
+      This defines the list of GPUs that are available for the scheduler. The value is defined in a Python list, whose values could be (1) GPU IDs like `["0", "1"]`, which means each test requires only one GPU, and the scheduler will distribute tasks among the two GPUs in parallel, (2) lists of GPU IDs like `[["0", "1"],["2", "3"]]`, which means each test may require two GPUs, and the scheduler will distribute tasks among the two two-GPU pairs in parallel. It can also be arbitrary mixed combinations of GPU ID and GPU ID list if you want.
+      
     * **result_root_folder [optional, default="results/"]**
 
       The scheduler will create a folder for each test instance (a test instance is a combination of parameters to test) to store the results. This parameter defines the parent folder in which the result folders are located.
@@ -63,13 +59,6 @@ The configuration is defined in a nested Python dictionary structure, which cont
     * **scheduler_log_file_path [optional, default="scheduler.log"]** 
 
       The scheduler will output a log file, which stores the start time, the end time, and the worker GPU for each test instance. Thi configuration defines the file name of the log file.
-      
-* **theano_config [mandatory if backend="theano"]**
-  
-    The configuration for theano. It contains the following key.
-
-	* **theanorc_template_file [optional, default=None]**
-	  It defines the template .theanorc file for theano backend. The scheduler will change `device` value in `global` region, and keep all other configurations exactly the same as in the theanorc_template_file (if exists).
 
 * **global_config [optional, default={}]**
   
@@ -80,15 +69,11 @@ The configuration is defined in a nested Python dictionary structure, which cont
     It is a list of Python dictionaries, which defines the parameter combinations to test. In each Python dictionary in the list, it contains multiple key-value pairs. The key is the name of parameter, the value is a list containing all values to test. The "cross product" of those values will be taken to compose the test instances. And the final test instances is the union of all test instances defined by all Python dictionaries in the list. For a clearer explaination, see the example below.
 
 Here is a sample configuration. Assume that it is stored in config.py.
+
 ```
 config = {
     "scheduler_config": {
-        "backend": "theano",
-        "gpu": ["gpu0", "gpu1", "gpu2"]
-    },
-
-    "theano_config": {
-        "theanorc_template_file": "sample.theanorc"
+        "gpu": ["0", "1", "2"]
     },
 
     "global_config": {
@@ -123,7 +108,7 @@ The test code should inherit from `gpu_task_scheduler.gpu_task.GPUTask` class, w
 
 * **def required_env(self) [optional]**
 
-  The scheduler will automatically set GPU-related environment variables (e.g. which GPU to use). But your test code may require some extra environment variable settings. This interface helps you with that. It is called before the test starts running. You can return the required environment variables in a Python dictionary, whose keys are environment variable names and values are the corresponding environment variable values.
+  The scheduler will automatically set GPU-related environment variables (e.g. which GPU to use) using `CUDA_VISIBLE_DEVICES`. But your test code may require some extra environment variable settings. This interface helps you with that. It is called before the test starts running. You can return the required environment variables in a Python dictionary, whose keys are environment variable names and values are the corresponding environment variable values.
 
 * **def main(self) [mandatory]**
 
@@ -184,9 +169,6 @@ It contains following public interfaces:
 
 * **def __init__(self, config)**
   The constructor. ``config`` is the configuration object in Python dictionary (same as the one in ``GPUTaskScheduler`` constructor.)
-
-* **def get_all_theano_config(self)**
-  Returns the theano configurations.
 
 * **def get_all_scheduler_config(self)**
   Returns the scheduler configurations.

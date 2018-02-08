@@ -1,14 +1,9 @@
 import itertools, copy, collections, os, sys
-try:
-    import ConfigParser
-except ImportError:
-    import configparser as ConfigParser
 
 class ConfigManager:
     def __init__(self, config):
         self._config = config
         self._scheduler_config = None
-        self._theano_config = None
         self._test_config = None
         self._global_config = None
         self._counter = 0
@@ -31,49 +26,18 @@ class ConfigManager:
                 os.makedirs(self._scheduler_config["temp_folder"])
             self._scheduler_config.setdefault("log_file", "worker.log")
             self._scheduler_config.setdefault("scheduler_log_file_path", "scheduler.log")
-            
-            self._scheduler_config.setdefault("backend", "theano")
-            if self._scheduler_config["backend"] != "theano" and self._scheduler_config["backend"] != "tensorflow":
-                raise ValueError("unsupported backend {}".format(self._scheduler_config["backend"]))
-            if self._scheduler_config["backend"] == "theano":
-                self._parse_theano_config()
-            if self._scheduler_config["backend"] == "tensorflow":
-                self._parse_tensorflow_config()
                 
             if "gpu" not in self._scheduler_config:
                 raise ValueError("could not find {} in {}".format("gpu", "scheduler_config"))
             if len(self._scheduler_config["gpu"]) < 1:
-                raise ValueError("please specify at least one gpu in {}".format("scheduler_config"))                
+                raise ValueError("please specify at least one gpu in {}".format("scheduler_config")) 
+            for i, gpu in enumerate(self._scheduler_config["gpu"]):
+            	if type(gpu) == list:
+            		self._scheduler_config["gpu"][i] = ",".join(gpu)
+            	elif type(gpu) != str:
+            		raise ValueError("gpu can only be a string or a list of strings")              
         else:
             raise ValueError('could not find {} in {}'.format("scheduler_config", "config"))
-    
-    def _parse_tensorflow_config(self):
-        pass
-    
-    def _parse_theano_config(self):
-        if "theano_config" in self._config:
-            self._theano_config = self._config["theano_config"]    
-            if "theanorc_template_file" not in self._theano_config:
-                self._theano_config["theanorc_template_file"] = None
-            if not os.path.exists(self._scheduler_config["temp_folder"]):
-                os.makedirs(self._scheduler_config["temp_folder"])
-            
-            self._theano_config["theanorc_files"] = []
-            
-            cf = ConfigParser.ConfigParser()
-            if self._theano_config["theanorc_template_file"] is not None:
-                cf.read(self._theano_config["theanorc_template_file"])
-            if "global" not in cf.sections():
-                cf.add_section("global")
-            for gpu in self._scheduler_config["gpu"]:
-                cf.set("global", "device", gpu)
-                path = os.path.join(self._scheduler_config["temp_folder"], "theanorc_{}".format(gpu))
-                with open(path, "w") as f:
-                    cf.write(f)
-                self._theano_config["theanorc_files"].append({"name": gpu, "path": path})
-            
-        else:
-            raise ValueError('could not find {} in {}'.format("theano_config", "config"))
         
     def _parse_global_config(self):
         if "global_config" in self._config:
@@ -104,9 +68,6 @@ class ConfigManager:
         #for key in ["z_mode_std", "fuel_random", "num_zdim", "run", "num_zmode", "z_mode_r","blocks_random", "num_packing","log_models"]:
             ans += "{}{}{}{}".format(key, self._scheduler_config["test_config_string_indicator"], config[key], self._scheduler_config["test_config_string_separator"])
         return ans
-        
-    def get_all_theano_config(self):
-        return self._theano_config
             
     def get_all_scheduler_config(self):
         return self._scheduler_config
@@ -127,20 +88,12 @@ class ConfigManager:
         
     def get_gpu_envs(self):
         envs = []
-        if self._scheduler_config["backend"] == "theano":
-            for theanorc_file in self._theano_config["theanorc_files"]:
-                obj = {}
-                obj["name"] = theanorc_file["name"]
-                obj["env"] = {}
-                obj["env"]["THEANORC"] = theanorc_file["path"]
-                envs.append(obj)
-        elif self._scheduler_config["backend"] == "tensorflow":
-            for gpu in self._scheduler_config["gpu"]:
-                obj = {}
-                obj["name"] = "gpu{}".format(gpu)
-                obj["env"] = {}
-                obj["env"]["CUDA_VISIBLE_DEVICES"] = gpu
-                envs.append(obj)
+        for gpu in self._scheduler_config["gpu"]:
+            obj = {}
+            obj["name"] = "gpu{}".format(gpu)
+            obj["env"] = {}
+            obj["env"]["CUDA_VISIBLE_DEVICES"] = gpu
+            envs.append(obj)
         return envs
                 
         
@@ -165,7 +118,6 @@ class ConfigManager:
 if __name__ == "__main__":
     import config_sample
     config_manager = ConfigManager(config_sample.config)
-    print(config_manager.get_all_theano_config())
     print(config_manager.get_all_scheduler_config())
     print(config_manager.get_all_global_config())
     print(config_manager.get_all_test_config())

@@ -3,3 +3,4 @@ temp/
 results/
 *.pyc
 *.log
+.DS_Store
