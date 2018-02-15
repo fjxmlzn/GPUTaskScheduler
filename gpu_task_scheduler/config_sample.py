@@ -13,7 +13,7 @@ config = {
             "method": ["GAN", "ALI"],
             "num_packing": [1, 2],
             "num_zmode": [1, 2]
-        }, 
+        },
         {
             "method": ["WGAN"],
             "num_packing": [3, 4],

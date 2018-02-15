@@ -3,13 +3,15 @@ try:
 except ImportError:
     pass
 else:
-    matplotlib.use('Agg')
+    matplotlib.use("Agg")
 
-import sys, imp
+import sys
+import imp
 try:
     import cPickle as pickle
 except ImportError:
     import _pickle as pickle
+
 
 def main():
     cwd = sys.argv[4]
