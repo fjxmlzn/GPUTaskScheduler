@@ -37,6 +37,8 @@ class ConfigManager:
             self._scheduler_config.setdefault("log_file", "worker.log")
             self._scheduler_config.setdefault(
                 "scheduler_log_file_path", "scheduler.log")
+            self._scheduler_config.setdefault(
+                "config_string_value_maxlen", 30)
 
             if "gpu" not in self._scheduler_config:
                 raise ValueError("could not find {} in {}".format(
@@ -80,11 +82,13 @@ class ConfigManager:
 
     def _get_test_config_string(self, config):
         ans = ""
+        value_len = self._scheduler_config["config_string_value_maxlen"]
         for key in sorted(config.keys()):
             ans += "{}{}{}{}".format(
                 key, self._scheduler_config["test_config_string_indicator"],
-                config[key],
+                str(config[key])[0: value_len],
                 self._scheduler_config["test_config_string_separator"])
+        ans = ans.replace(" ", "")
         return ans
 
     def get_all_scheduler_config(self):
@@ -106,6 +110,7 @@ class ConfigManager:
                     inst[key],
                     self._scheduler_config["test_config_string_separator"])
             ans += self._scheduler_config["test_config_string_inst_separator"]
+        ans = ans.replace(" ", "")
         return ans
 
     def get_gpu_envs(self):

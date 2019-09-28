@@ -60,6 +60,10 @@ The configuration is defined in a nested Python dictionary structure, which cont
 
       The scheduler will output a log file, which stores the start time, the end time, and the worker GPU for each test instance. Thi configuration defines the file name of the log file.
 
+    * **config_string_value_maxlen [optional, default=30]**
+
+      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key_i_ is the name of the parameter to test, and value_i_ is the value of that parameter. If the length of each value is longer than `config_string_value_maxlen`, the value will be truncated to `config_string_value_maxlen`. 
+
 * **global_config [optional, default={}]**
   
     It is a Python dictionary, which defines the parameters that are kept the same in all test instances.
