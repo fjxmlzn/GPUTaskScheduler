@@ -38,15 +38,15 @@ The configuration is defined in a nested Python dictionary structure, which cont
 	
     * **test_config_string_indicator [optional, default="-"]**
 
-      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key_i_ is the name of the parameter to test, and value_i_ is the value of that parameter. Here "-" is the  test_config_string_indicator. You can customize the indicator by this configuration.
+      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key*i* is the name of the parameter to test, and value*i* is the value of that parameter. Here "-" is the  test_config_string_indicator. You can customize the indicator by this configuration.
 
     * **test_config_string_separator [optional, default=","]**
       
-      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key_i_ is the name of the parameter to test, and value_i_ is the value of that parameter. Here "," is the  test_config_string_separator. You can customize the separator by this configuration.
+      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key*i* is the name of the parameter to test, and value*i* is the value of that parameter. Here "," is the `test_config_string_separator`. You can customize the separator by this configuration.
 
     * **test_config_string_inst_separator [optional, default="+"]**
     
-      The scheduler has an interface to return all test instances in a string. The string for each test instance is the same as the name of result folder, and will be separated by test_config_string_inst_separator. You can customize the separator by this configuration.
+      The scheduler has an interface to return all test instances in a string. The string for each test instance is the same as the name of result folder, and will be separated by `test_config_string_inst_separator`. You can customize the separator by this configuration.
 
     * **temp_folder [optional, default="temp/"]**
 
@@ -62,7 +62,7 @@ The configuration is defined in a nested Python dictionary structure, which cont
 
     * **config_string_value_maxlen [optional, default=30]**
 
-      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key_i_ is the name of the parameter to test, and value_i_ is the value of that parameter. If the length of each value is longer than `config_string_value_maxlen`, the value will be truncated to `config_string_value_maxlen`. 
+      The name of each result folder is in the format of "key1-value1,key2-value2,...", where key*i* is the name of the parameter to test, and value*i* is the value of that parameter. If the length of each value is longer than `config_string_value_maxlen`, the value will be truncated to `config_string_value_maxlen`. 
 
 * **global_config [optional, default={}]**
   
@@ -171,7 +171,7 @@ Besides the scheduler class, the library contains another userful class `ConfigM
 
 It contains following public interfaces:
 
-* **def __init__(self, config)**
+* **def \_\_init\_\_(self, config)**
   The constructor. ``config`` is the configuration object in Python dictionary (same as the one in ``GPUTaskScheduler`` constructor.)
 
 * **def get_all_scheduler_config(self)**
