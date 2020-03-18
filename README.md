@@ -193,7 +193,10 @@ It contains following public interfaces:
   Returns the number of untested parameter settings.
 
 ## Example
-For a complete use case, please refer to https://github.com/fjxmlzn/PacGAN.
+Projects that use this library:
+* [PacGAN](https://github.com/fjxmlzn/PacGAN)
+* [InfoGAN-CR](https://github.com/fjxmlzn/InfoGAN-CR)
+* [DoppelGANger](https://github.com/fjxmlzn/DoppelGANger)
 
 ## Contributing
 If you find bugs/problems or want to add more features to this library, feel free to submit issues or make pull requests.
