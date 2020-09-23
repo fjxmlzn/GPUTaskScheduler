@@ -37,6 +37,8 @@ class ConfigManager:
                 "scheduler_log_file_path", "scheduler.log")
             self._scheduler_config.setdefault(
                 "config_string_value_maxlen", 30)
+            self._scheduler_config.setdefault(
+                "ignored_keys_for_folder_name", [])
 
             if "gpu" not in self._scheduler_config:
                 raise ValueError("could not find {} in {}".format(
@@ -72,10 +74,13 @@ class ConfigManager:
         else:
             self._test_config = [{}]
 
-    def _get_test_config_string(self, config):
+    def _get_test_config_string(self, config, filter_keys=False):
         ans = ""
         value_len = self._scheduler_config["config_string_value_maxlen"]
         for key in sorted(config.keys()):
+            if (filter_keys and key in self._scheduler_config[
+                    "ignored_keys_for_folder_name"]):
+                continue
             ans += "{}{}{}{}".format(
                 key, self._scheduler_config["test_config_string_indicator"],
                 str(config[key])[0: value_len],
@@ -126,7 +131,8 @@ class ConfigManager:
                 self._test_config[self._counter])
             ans["work_dir"] = os.path.join(
                 self._scheduler_config["result_root_folder"],
-                ans["test_config_string"])
+                self._get_test_config_string(
+                    self._test_config[self._counter], True))
             self._counter += 1
         return ans
 

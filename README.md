@@ -64,6 +64,10 @@ The configuration is defined in a nested Python dictionary structure, which cont
 
       The name of each result folder is in the format of "key1-value1,key2-value2,...", where key*i* is the name of the parameter to test, and value*i* is the value of that parameter. If the length of each value is longer than `config_string_value_maxlen`, the value will be truncated to `config_string_value_maxlen`. 
 
+    * **ignored_keys_for_folder_name [optional, default=[]]**
+
+      By default, all keys in the `test_config` section will be used to construct the result folder name. However, the keys listed in `ignored_keys_for_folder_name` will be ignored. 
+
 * **global_config [optional, default={}]**
   
     It is a Python dictionary, which defines the parameters that are kept the same in all test instances.
