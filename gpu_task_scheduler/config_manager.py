@@ -1,8 +1,6 @@
 import itertools
 import copy
-import collections
 import os
-import sys
 
 
 class ConfigManager:
@@ -67,16 +65,10 @@ class ConfigManager:
         if "test_config" in self._config:
             self._test_config = []
             for inst in self._config["test_config"]:
-                keys = []
-                values = []
-                for config_key in inst:
-                    keys.append(config_key)
-                    values.append(inst[config_key])
+                keys = inst.keys()
+                values = inst.values()
                 for pairs in itertools.product(*values):
-                    obj = {}
-                    for i in range(len(keys)):
-                        obj[keys[i]] = pairs[i]
-                    self._test_config.append(obj)
+                    self._test_config.append(dict(zip(keys, pairs)))
         else:
             self._test_config = [{}]
 
@@ -143,15 +135,3 @@ class ConfigManager:
 
     def get_num_gpu(self):
         return len(self._scheduler_config["gpu"])
-
-
-if __name__ == "__main__":
-    import config_sample
-    config_manager = ConfigManager(config_sample.config)
-    print(config_manager.get_all_scheduler_config())
-    print(config_manager.get_all_global_config())
-    print(config_manager.get_all_test_config())
-    print(config_manager.get_gpu_envs())
-
-    for i in range(config_manager.get_num_left_config()):
-        print(config_manager.get_next_config())

@@ -1,14 +1,11 @@
 from .config_manager import ConfigManager
 import multiprocess
-import time
 import os
-import copy
 import logging
 import shlex
 import subprocess
 import sys
 from multiprocess.managers import BaseManager
-import os
 import pathos
 try:
     import cPickle as pickle
@@ -17,23 +14,26 @@ except ImportError:
 
 DEVNULL = open(os.devnull, "w")
 
-# code from https://stackoverflow.com/questions/107705/disable-output-buffering
-
 
 class Unbuffered(object):
+    """
+    Modified from:
+     https://stackoverflow.com/questions/107705/disable-output-buffering
+    """
+
     def __init__(self, stream):
-        self.stream = stream
+        self._stream = stream
 
     def write(self, data):
-        self.stream.write(data)
-        self.stream.flush()
+        self._stream.write(data)
+        self._stream.flush()
 
     def writelines(self, datas):
-        self.stream.writelines(datas)
-        self.stream.flush()
+        self._stream.writelines(datas)
+        self._stream.flush()
 
     def __getattr__(self, attr):
-        return getattr(self.stream, attr)
+        return getattr(self._stream, attr)
 
 
 def gpu_worker(name, env, _lock, _config, _gpu_task_class, _config_manager,
@@ -147,11 +147,3 @@ class GPUTaskScheduler:
             process.start()
         for process in processes:
             process.join()
-
-
-if __name__ == "__main__":
-    import config_sample
-    import gpu_task
-    task_scheduler = GPUTaskScheduler(
-        config=config_sample.config, gpu_task_class=gpu_task.GPUTask)
-    task_scheduler.start()
