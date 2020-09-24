@@ -129,10 +129,12 @@ class ConfigManager:
             ans["config"].update(self._test_config[self._counter])
             ans["test_config_string"] = self._get_test_config_string(
                 self._test_config[self._counter])
+            test_config_string_filtered = self._get_test_config_string(
+                self._test_config[self._counter], True)
+            ans["test_config_string_filtered"] = test_config_string_filtered
             ans["work_dir"] = os.path.join(
                 self._scheduler_config["result_root_folder"],
-                self._get_test_config_string(
-                    self._test_config[self._counter], True))
+                test_config_string_filtered)
             self._counter += 1
         return ans
 
