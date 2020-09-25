@@ -68,6 +68,10 @@ The configuration is defined in a nested Python dictionary structure, which cont
 
       By default, all keys in the `test_config` section will be used to construct the result folder name. However, the keys listed in `ignored_keys_for_folder_name` will be ignored. 
 
+    * **ignored_characters_for_folder_name [optional, default=[" ", "[", "]"]]**
+      
+      The characters in `ignored_characters_for_folder_name` will be deleted when constucting the result folder name. The reason for having this option is that TensorFlow does not parse checkpoint paths with certain characters correctly.
+
 * **global_config [optional, default={}]**
   
     It is a Python dictionary, which defines the parameters that are kept the same in all test instances.

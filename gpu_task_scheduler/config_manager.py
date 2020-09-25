@@ -39,6 +39,8 @@ class ConfigManager:
                 "config_string_value_maxlen", 30)
             self._scheduler_config.setdefault(
                 "ignored_keys_for_folder_name", [])
+            self._scheduler_config.setdefault(
+                "ignored_characters_for_folder_name", [' ', '[', ']'])
 
             if "gpu" not in self._scheduler_config:
                 raise ValueError("could not find {} in {}".format(
@@ -85,7 +87,8 @@ class ConfigManager:
                 key, self._scheduler_config["test_config_string_indicator"],
                 str(config[key])[0: value_len],
                 self._scheduler_config["test_config_string_separator"])
-        ans = ans.replace(" ", "")
+        for c in self._scheduler_config["ignored_characters_for_folder_name"]:
+            ans = ans.replace(c, "")
         return ans
 
     def get_all_scheduler_config(self):
@@ -107,7 +110,6 @@ class ConfigManager:
                     inst[key],
                     self._scheduler_config["test_config_string_separator"])
             ans += self._scheduler_config["test_config_string_inst_separator"]
-        ans = ans.replace(" ", "")
         return ans
 
     def get_gpu_envs(self):
